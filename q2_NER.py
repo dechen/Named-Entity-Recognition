@@ -336,17 +336,17 @@ def print_confusion(confusion, num_to_tag):
     total_guessed_tags = confusion.sum(axis=0)
     # Summing left to right gets the total number of true tags
     total_true_tags = confusion.sum(axis=1)
-    print
-    print confusion
+    print()
+    print(confusion)
     for i, tag in sorted(num_to_tag.items()):
         prec = confusion[i, i] / float(total_guessed_tags[i])
         recall = confusion[i, i] / float(total_true_tags[i])
-        print 'Tag: {} - P {:2.4f} / R {:2.4f}'.format(tag, prec, recall)
+        print('Tag: {} - P {:2.4f} / R {:2.4f}'.format(tag, prec, recall))
 
 def calculate_confusion(config, predicted_indices, y_indices):
     """Helper method that calculates confusion matrix."""
     confusion = np.zeros((config.label_size, config.label_size), dtype=np.int32)
-    for i in xrange(len(y_indices)):
+    for i in range(len(y_indices)):
         correct_label = y_indices[i]
         guessed_label = predicted_indices[i]
         confusion[correct_label, guessed_label] += 1
@@ -377,16 +377,16 @@ def test_NER():
       best_val_epoch = 0
 
       session.run(init)
-      for epoch in xrange(config.max_epochs):
-        print 'Epoch {}'.format(epoch)
+      for epoch in range(config.max_epochs):
+        print('Epoch {}'.format(epoch))
         start = time.time()
         ###
         train_loss, train_acc = model.run_epoch(session, model.X_train,
                                                 model.y_train)   # 1.把 train 数据放进迭代里跑，得到 loss 和 accuracy
         val_loss, predictions = model.predict(session, model.X_dev, model.y_dev)   # 2.用这个model去预测 dev 数据，得到loss 和 prediction
-        print 'Training loss: {}'.format(train_loss)
-        print 'Training acc: {}'.format(train_acc)
-        print 'Validation loss: {}'.format(val_loss)
+        print('Training loss: {}'.format(train_loss))
+        print('Training acc: {}'.format(train_acc))
+        print('Validation loss: {}'.format(val_loss))
         if val_loss < best_val_loss:			# 用 val 数据的loss去找最小的loss
           best_val_loss = val_loss
           best_val_epoch = epoch
@@ -399,12 +399,12 @@ def test_NER():
         ###
         confusion = calculate_confusion(config, predictions, model.y_dev)  # 3.把 dev 的lable数据放进去，计算prediction的confusion
         print_confusion(confusion, model.num_to_tag)
-        print 'Total time: {}'.format(time.time() - start)
+        print('Total time: {}'.format(time.time() - start))
       
       saver.restore(session, './weights/ner.weights')	# 再次加载保存过的 weights，用 test 数据做预测，得到预测结果
-      print 'Test'
-      print '=-=-='
-      print 'Writing predictions to q2_test.predicted'
+      print('Test')
+      print('=-=-=')
+      print('Writing predictions to q2_test.predicted')
       _, predictions = model.predict(session, model.X_test, model.y_test)
       save_predictions(predictions, "q2_test.predicted")	# 把预测结果保存起来
 
